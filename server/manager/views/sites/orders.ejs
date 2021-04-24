@@ -1,0 +1,99 @@
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>No</th>
+            <th>User</th>
+            <th>Order code</th>
+            <th>Menu List</th>
+            <th>Total cost</th>
+            <th>Status</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% let counter = 1; %>
+        <% orders_list.forEach(function(order){ %>
+            <tr class="orderRow <%- (selected == order.id) ? 'table-primary' : '' %>" order_id = "<%- order.id %>">
+                <td><%- (page-1) * 7 + counter%></td><% counter++ %>
+                <td><%- order.user_id %></td>
+                <td><%- order.order_code %></td>
+                <td>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Price</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let total_cost = 0; %>
+                            <% order.menu_list.forEach(function(menu) { %>
+                                <% total_cost += menu.price * menu.count; %>
+                                <tr>
+                                    <td><%- menu.title %></td>
+                                    <td><%- numberWithCommas(menu.price) + " VND" %></td>
+                                    <td><%- menu.count %></td> 
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                    
+                </td>
+                <td>
+                    <%- numberWithCommas(total_cost) + " VND" %>
+                </td>
+                <td>
+                    <% if (order.status == 0) { %>
+                        <div class="badge badge-warning"> New Order </div>
+                    <% } else if (order.status == 1) { %>
+                        <div class="badge badge-primary"> Processing Order </div>
+                    <% } else if (order.status == 2) { %>
+                        <div class="badge badge-success"> Finished Order </div>
+                    <% } %>
+                </td>
+                <td><%- getYYYYMMDD(order.created_date) %></td>
+                <td>
+                    <div class="dropdown">
+                        <% if (order.status < 2) { %>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu" >
+                          <a href="#" class="dropdown-item status_button">
+                            <i class="fa fa-edit"></i> 
+                            <% if (order.status == 0) { %>
+                                In Processing
+                            <% } else if (order.status == 1) { %>
+                                Finish
+                            <% } %>
+                          </a>
+                        </div>
+                        <% } %>
+                    </div>
+                </td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+
+<script src="/manager/public/js/socket.io.js"></script>
+<script>
+    $(".status_button").on('click', function() {
+        let order_id = $(this).closest(".orderRow").attr("order_id");
+
+        $.post('/manager/orders/updateStatus', {order_id: order_id}, function(response) {
+            if (response.status == 0) {
+                let socket = io();
+                socket.emit('notify user', response);
+                location.reload();
+            }
+        });
+    });
+
+    $(document).on('click', '.orderRow', function() {
+        $(".orderRow").removeClass('table-primary');
+        $(this).addClass('table-primary');
+    });
+</script>

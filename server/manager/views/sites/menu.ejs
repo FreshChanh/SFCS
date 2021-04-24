@@ -1,0 +1,314 @@
+<div class="row" style="margin-bottom: 20px;">
+    <div class="col-md-11"></div>
+    <div class="col-md-1">
+        <div class="col-md-8"></div>
+        <button id="addButton" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addModal" style="float: right;">
+            Add Menu
+        </button>
+    </div>
+</div>
+
+
+<div>
+    <% const NUM_COLS = 4; %>
+    <% for (let i = 0; i < menu_list.length / NUM_COLS ; i++) { %>
+        <div class="row" style="margin-bottom: 20px;">
+            <% for (let j = 0; j < NUM_COLS; j++) { %>
+                <% if (i * NUM_COLS + j < menu_list.length) { %>
+                <div class="col-md-3">
+                    <% let menu = menu_list[i * NUM_COLS + j]; %>
+                    <div class="col-md-11 border border-secondary rounded menuItem" style="padding: 10px;" menu_id="<%- menu.id %>">
+                        <img class="img-fluid menu_image_path" src="/public/<%- menu.image_path %>" value="/public/<%- menu.image_path %>">
+                        <h4 class="menu_name" value="<%- menu.name %>"><%- menu.name %></h4>
+                        <h5 class="menu_price" value="<%- menu.price %>"> <%- numberWithCommas(menu.price) %> VND </h5>
+                        <h5>
+                            <div class="menu_type d-none" value="<%- menu.type %>"></div>
+                            <div class="menu_best_seller d-none" value="<%- menu.best_seller %>"></div>
+                            <div class="menu_sale_off d-none" value="<%- menu.sale_off %>"></div>
+                            <% if (menu.type == 1) { %>
+                                <li class="fa fa-cutlery"></li>
+                            <% } else if (menu.type == 2) { %>
+                                <li class="fa fa-glass"></li>
+                            <% } else if (menu.type == 3) { %>
+                                <li class="fa fa-apple"></li>
+                            <% } %>
+                            <% if (menu.best_seller == 1) { %>
+                                <li class="fa fa-bookmark"></li>
+                            <% } %>
+                            <% if (menu.sale_off == 1) { %>
+                                <li class="fa fa-money"></li>
+                            <% } %>
+                        </h5>
+                        <div class="menu_description" value="<%- menu.description %>"> <%- menu.description %></div>
+                        <div style="margin-top: 10px">
+                            <button class="btn btn-secondary editButton" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i> Edit</button>
+                            <button class="btn btn-danger removeButton" data-toggle="modal" data-target="#removeMenuModal"><i class="fa fa-trash"> </i> Remove</button>
+                        </div>
+                        
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit menu</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="addForm" action="/manager/menu/addMenu" method="post" enctype="multipart/form-data">
+            <div class="alert alert-danger d-none" id="addModalAlert"></div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_title">Title: </label>
+                <input class="form-control" type="text" id="add_title" name="add_title">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_thumbnail">Thumbnail: </label>
+                <input class="form-control-file" type="file" id="add_thumbnail" name="add_thumbnail" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_price">Price: </label>
+                <input class="form-control" type="number" id="add_price" name="add_price">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_type">Type: </label>
+                <select class="form-control" name="add_type" id="add_type">
+                    <option value="-1">Select a type</option>
+                    <option value="1">Foods</option>
+                    <option value="2">Drinks</option>
+                    <option value="3">Vegetables</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_description">Description: </label>
+                <textarea class="form-control" name="add_description" id="add_description" cols="30" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="add_bestseller" id="add_bestseller">
+                    <label class="form-check-label" for="add_bestseller">Best seller</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="add_saleoff" id="add_saleoff">
+                    <label class="form-check-label" for="add_saleoff">Sale Off</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="addMenuButton">Create Menu</button>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit menu</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm" action="/manager/menu/updateMenu" method="post" enctype="multipart/form-data">
+            <div class="alert alert-danger d-none" id="editModalAlert"></div>
+            <input type="text" class="d-none" id="edit_id" name="edit_id">
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_title">Title: </label>
+                <input class="form-control" type="text" id="edit_title" name="edit_title">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_thumbnail">Thumbnail: </label>
+                <input class="form-control-file" type="file" id="edit_thumbnail" name="edit_thumbnail" accept="image/*">
+                <img id="edit_thumb" class="img-fluid" style="margin-top: 10px;">
+            </div>
+            
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_price">Price: </label>
+                <input class="form-control" type="number" id="edit_price" name="edit_price">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_type">Type: </label>
+                <select class="form-control" name="edit_type" id="edit_type">
+                    <option value="-1">Select a type</option>
+                    <option value="1">Foods</option>
+                    <option value="2">Drinks</option>
+                    <option value="3">Vegetables</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_description">Description: </label>
+                <textarea class="form-control" name="edit_description" id="edit_description" cols="30" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="edit_bestseller" id="edit_bestseller">
+                    <label class="form-check-label" for="edit_bestseller">Best seller</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="edit_saleoff" id="edit_saleoff">
+                    <label class="form-check-label" for="edit_saleoff">Sale Off</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="editMenuButton">Save Changes</button>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeMenuModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Remove</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="remove_menu_id" class="d-none">
+          <p>Are you sure to remove this menu ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="removeMenuButton" class="btn btn-primary">OK</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- End Modal -->
+
+<script>
+$(".editButton").on('click', function(e) {
+
+    let parent = $(this).closest(".menuItem");
+    let title = parent.find(".menu_name").attr("value");
+    let imagePath = parent.find(".menu_image_path").attr("value");
+    let price = parent.find(".menu_price").attr("value");
+    let description = parent.find(".menu_description").attr("value");
+    let type = parent.find(".menu_type").attr("value");
+    let bestSeller = parent.find(".menu_best_seller").attr("value");
+    let saleOff = parent.find(".menu_sale_off").attr("value");
+
+    // Set value to modal
+    $("#edit_id").val(parent.attr("menu_id"));
+    $("#edit_title").val(title);
+    $("#edit_price").val(price);
+    $("#edit_description").val(description);
+    $("#edit_type").val(type);
+    $("#edit_thumb").attr("src", imagePath);
+
+    $("#edit_bestseller").prop("checked", false);
+    $("#edit_saleoff").prop("checked", false);
+    if (bestSeller == 1) {
+        $("#edit_bestseller").prop("checked", true);
+    }
+    if (saleOff == 1) {
+        $("#edit_saleoff").prop("checked", true);
+    }
+});
+
+$("#editForm").submit(function (e) {
+
+    e.preventDefault();
+
+    let title = $("#edit_title").val();
+    let price = $("#edit_price").val();
+    let type = $("#edit_type").val();
+    
+    if (title == "") {
+        $("#editModalAlert").html("The title can't be empty !");
+        $("#editModalAlert").removeClass("d-none");
+        return;
+    }
+    if (price <= 0) {
+        $("#editModalAlert").html("The price can't be lower than zero !");
+        $("#editModalAlert").removeClass("d-none");
+        return;
+    }
+    if (type == -1) {
+        $("#editModalAlert").html("Please choose a type !");
+        $("#editModalAlert").removeClass("d-none");
+        return;
+    }
+    
+    $("#editModalAlert").addClass("d-none");
+    $("#editForm")[0].submit();
+});
+
+
+$("#addForm").submit(function (e) {
+
+    e.preventDefault();
+
+    let title = $("#add_title").val();
+    let thumbnail = $("#add_thumbnail").val();
+    let price = $("#add_price").val();
+    let type = $("#add_type").val();
+    
+    if (title == "") {
+        $("#addModalAlert").html("The title can't be empty !");
+        $("#addModalAlert").removeClass("d-none");
+        return;
+    }
+    if (thumbnail == "") {
+        $("#addModalAlert").html("Please upload the thumbnail !");
+        $("#addModalAlert").removeClass("d-none");
+        return;
+    }
+    if (price <= 0) {
+        $("#addModalAlert").html("The price can't be lower than zero !");
+        $("#addModalAlert").removeClass("d-none");
+        return;
+    }
+    if (type == -1) {
+        $("#addModalAlert").html("Please choose a type !");
+        $("#addModalAlert").removeClass("d-none");
+        return;
+    }
+    
+    $("#addModalAlert").addClass("d-none");
+    $("#addForm")[0].submit();
+});
+
+$(".removeButton").on('click', function(e) {
+    let parent = $(this).closest(".menuItem");
+    $("#remove_menu_id").val(parent.attr("menu_id"));
+});
+
+$("#removeMenuButton").on('click', function() {
+    let id = $("#remove_menu_id").val();
+
+    $.post("/manager/menu/removeMenu", {
+        id: id
+    }, function (res) {
+        console.log(res);
+        if (res.status == "cant_remove") {
+            $("#removeMenuModal").modal('hide');
+            showAlertModal("Failed", "Can't remove this menu !", "/manager/menu");
+        }
+        else if (res.status == "success") {
+            $("#removeMenuModal").modal('hide');
+            showAlertModal("Success", "Remove this menu successfully !", "/manager/menu");
+        }
+    });
+});
+</script>

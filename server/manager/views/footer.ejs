@@ -1,0 +1,73 @@
+<!-- SOME DEFAULT MODALS -->
+
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button href="#" class="btn btn-primary ok_button" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+    function showAlertModal(title, content, next_url) {
+        $("#alertModal").find(".modal-title").html(title);
+        $("#alertModal").find(".modal-body").html(content);
+        if (next_url) {
+          $("#alertModal").find(".ok_button").attr("href", next_url);
+        }
+        $('#alertModal').modal('toggle');
+    }
+
+    $(".ok_button").on('click', function() {
+        let url = $(this).attr("href");
+        location.href = url;
+    });
+</script>
+
+<!-- END SOME DEFAULT MODALS-->
+
+<!-- DEFAULT TOAST -->
+<div aria-live="polite" aria-atomic="true">
+  <div id="toasts_container" style="position: absolute; top: 0; right: 0;">
+  </div>
+</div>
+
+<script>
+  let index = 0;
+  function showToast(title, content) {
+    let html = `<div id="toast${index}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+      <div class="toast-header">
+        <strong class="mr-auto">${title}</strong>
+        <button type="button" class="ml-2 mb-1 close closeToast" data-dismiss="toast" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="toast-body">
+        ${content}
+      </div>
+    </div>`;
+
+    $("#toasts_container").html(html + $("#toasts_container").html());
+    $(`#toast${index}`).toast('show');
+    index++;
+  }
+
+  $(document).on('click', '.closeToast', function() {
+    let toast_id = $(this).closest('.toast').attr('id');
+    $(`#${toast_id}`).toast('hide');
+  });
+
+  $(document).on('click', '.toast', function() {
+    window.location.href = "/manager/orders";
+  });
+
+</script>
+<!-- END DEFAULT TOAST -->
+</body>
+</html>

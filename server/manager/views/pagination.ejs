@@ -1,0 +1,26 @@
+<% if (locals.totalCount && totalCount > 7 ) { %>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <% if (parseInt(page) > 1) { %>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%- (parseInt(page) - 1)%>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      <% } %>
+      <% let numsPage = (totalCount % 7 == 0) ? totalCount / 7 : totalCount / 7 + 1; %>
+      <% for (let i = 1; i <= numsPage; ++i) { %>
+      <li class="page-item <%- (i == page) ? 'active' : '' %>"><a class="page-link" href="?page=<%- i %>"><%- i %></a></li>
+      <% } %>
+      <% if (parseInt(page) < totalCount / 7) { %>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%- (parseInt(page) + 1)%>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <% } %>
+    </ul>
+</nav>
+<% } %>

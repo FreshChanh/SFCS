@@ -1,0 +1,367 @@
+<div>
+    
+</div>
+<button id="addUserButton" type="button" class="btn btn-secondary" style="float: right; margin-bottom: 20px;" data-toggle="modal" data-target="#addModal">
+    Add User
+</button>
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>No</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Gender</th>
+            <th>Birthday</th>
+            <th>Address</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% let counter = 1; %>
+        <% users_list.forEach(function(user){ %>
+            <tr class="userRow" user_id = "<%- user.id %>">
+                <td><%- (page-1) * 7 + counter%></td><% counter++ %>
+                <td class="user_email"><%- user.email %></td>
+                <td class="user_username"><%- user.username %></td>
+                <% let user_gender = ""; %>
+                <% if (user.gender == 0) user_gender = "Male"; else if (user.gender == 1) user_gender = "Female"; else user_gender = ""; %>
+                <td class="user_gender" value="<%- user.gender %>"><%- user_gender %></td>
+                <td class="user_birthday"><%- getYYYYMMDD(user.birthday) %></td>
+                <td class="user_address"><%- user.address %></td>
+                <td><%- getYYYYMMDD(user.created_date) %></td>
+                <td><%- getYYYYMMDD(user.updated_date) %></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu" >
+                          <a class="dropdown-item edit_button" href="#" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i> Edit</a>
+                          <a class="dropdown-item reset_button" href="#" data-toggle="modal" data-target="#resetPasswordModal"><i class="fa fa-undo"></i> Reset Password</a>
+                          <a class="dropdown-item remove_button" href="#" data-toggle="modal" data-target="#removeUserModal"><i class="fa fa-trash"></i> Remove</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+
+<!-- Modal -->
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add user</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger d-none" id="addModalAlert"></div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_email">Email: </label>
+                <input class="form-control" type="text" id="add_email" name="add_email">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_username">Username: </label>
+                <input class="form-control" type="text" id="add_username" name="add_username">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_gender">Gender: </label>
+                <select class="form-control" name="add_gender" id="add_gender">
+                    <option value="-1">Select a Gender</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_birthday">Birthday: </label>
+                <input class="form-control" type="date" id="add_birthday" name="add_birthday">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="add_address">Address: </label>
+                <input class="form-control" type="text" id="add_address" name="add_address">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="addUserDataButton">Create User</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit user data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger d-none" id="editModalAlert"></div>
+            <input type="text" id="edit_id" class="d-none">
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_email">Email: </label>
+                <input class="form-control" type="text" id="edit_email" name="edit_email">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_username">Username: </label>
+                <input class="form-control" type="text" id="edit_username" name="edit_username">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_gender">Gender: </label>
+                <select class="form-control" name="edit_gender" id="edit_gender">
+                    <option value="-1">Select a Gender</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_birthday">Birthday: </label>
+                <input class="form-control" type="date" id="edit_birthday" name="edit_birthday">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_address">Address: </label>
+                <input class="form-control" type="text" id="edit_address" name="edit_address">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveUserDataButton">Save changes</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="reset_user_id" class="d-none">
+          <p>Are you sure to reset this user's password to 12345 ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="resetUserPasswordButton" class="btn btn-primary">OK</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeUserModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Remove</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="remove_user_id" class="d-none">
+          <p>Are you sure to remove this user ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="removeUserButton" class="btn btn-primary">OK</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- End Modal -->
+
+<script>
+    $(".edit_button").on('click', function(e) {
+
+        let parent = $(this).closest(".userRow");
+        let email = parent.find(".user_email").text();
+        let username = parent.find(".user_username").text();
+        let gender = parent.find(".user_gender").attr("value");
+        let birthday = parent.find(".user_birthday").text();
+        let address = parent.find(".user_address").text();
+
+        // Set value to modal
+        $("#edit_id").val(parent.attr("user_id"));
+        $("#edit_email").val(email);
+        $("#edit_username").val(username);
+        $("#edit_gender").val(gender);
+        $("#edit_birthday").val(birthday);
+        $("#edit_address").val(address);
+    });
+
+    $(".reset_button").on('click', function(e) {
+        let parent = $(this).closest(".userRow");
+        $("#reset_user_id").val(parent.attr("user_id"));
+    });
+
+    $(".remove_button").on('click', function(e) {
+        let parent = $(this).closest(".userRow");
+        $("#remove_user_id").val(parent.attr("user_id"));
+    });
+
+    $("#saveUserDataButton").on('click', function (e) {
+        let id = $("#edit_id").val();
+        let email = $("#edit_email").val();
+        let username = $("#edit_username").val();
+        let gender = $("#edit_gender").val();
+        let birthday = $("#edit_birthday").val();
+        let address = $("#edit_address").val();
+
+        if (email == "") {
+            $("#editModalAlert").html("The email can't be empty !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+        if (username == "") {
+            $("#editModalAlert").html("The username can't be empty !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+        if (gender == -1) {
+            $("#editModalAlert").html("Please choose a gender !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+        if (birthday == "") {
+            $("#editModalAlert").html("The birthday can't be empty !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+
+        $.post("/manager/users/updateUserData", {
+            id: id,
+            email: email,
+            username: username,
+            gender: gender,
+            birthday: birthday,
+            address: address
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_update") {
+                $("#editModalAlert").html("Cant update data !");
+                $("#editModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "error") {
+                $("#editModalAlert").html("Some errors occurred !");
+                $("#editModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "success") {
+                $("#editModal").modal('hide');
+                showAlertModal("Success", "Update user's data successfully !", "/manager/users");
+            }
+        });
+
+        $("#editModalAlert").addClass("d-none");
+    });
+
+    $("#resetUserPasswordButton").on('click', function() {
+        let id = $("#reset_user_id").val();
+
+        $.post("/manager/users/resetUserPassword", {
+            id: id
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_reset") {
+                $("#resetPasswordModal").modal('hide');
+                showAlertModal("Failed", "Can't reset this user's password !", "/manager/users");
+            }
+            else if (res.status == "success") {
+                $("#resetPasswordModal").modal('hide');
+                showAlertModal("Success", "Reset this user's password successfully !", "/manager/users");
+            }
+        });
+    });
+
+    $("#removeUserButton").on('click', function() {
+        let id = $("#remove_user_id").val();
+
+        $.post("/manager/users/removeUser", {
+            id: id
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_remove") {
+                $("#removeUserModal").modal('hide');
+                showAlertModal("Failed", "Can't remove this user !", "/manager/users");
+            }
+            else if (res.status == "success") {
+                $("#removeUserModal").modal('hide');
+                showAlertModal("Success", "Remove this user successfully !", "/manager/users");
+            }
+        });
+    });
+
+    $("#addUserDataButton").on('click', function() {
+        let email = $("#add_email").val();
+        let username = $("#add_username").val();
+        let gender = $("#add_gender").val();
+        let birthday = $("#add_birthday").val();
+        let address = $("#add_address").val();
+
+        if (email == "") {
+            $("#addModalAlert").html("The email can't be empty !");
+            $("#addModalAlert").removeClass("d-none");
+            return;
+        }
+        if (username == "") {
+            $("#addModalAlert").html("The username can't be empty !");
+            $("#addModalAlert").removeClass("d-none");
+            return;
+        }
+        if (gender == -1) {
+            $("#addModalAlert").html("Please choose a gender !");
+            $("#addModalAlert").removeClass("d-none");
+            return;
+        }
+        if (birthday == "") {
+            $("#addModalAlert").html("The birthday can't be empty !");
+            $("#addModalAlert").removeClass("d-none");
+            return;
+        }
+
+        $.post("/manager/users/addUser", {
+            email: email,
+            username: username,
+            gender: gender,
+            birthday: birthday,
+            address: address
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_add") {
+                $("#addModalAlert").html("Cant add user !");
+                $("#addModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "error") {
+                $("#addModalAlert").html("Some errors occurred !");
+                $("#addModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "email_existed") {
+                $("#addModalAlert").html("This email has been existed !");
+                $("#addModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "username_existed") {
+                $("#addModalAlert").html("This username has been existed !");
+                $("#addModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "success") {
+                $("#addModal").modal('hide');
+                showAlertModal("Success", "Add user successfully !", "/manager/users");
+            }
+        });
+
+        $("#addModalAlert").addClass("d-none");
+    });
+</script>

@@ -1,0 +1,39 @@
+<%- include('../header.ejs') %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <div class="text-center mt-3 mb-3">
+                <img src="/manager/public/img/logo.png" alt="Logo" class="rounded float-center w-25 h-25">
+            </div>
+            <div class="text-center mt-3 mb-3">
+                <h3>SFCS Management</h3>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-3 border rounded bg-white">
+            <form class="pt-3 pb-3" action="/manager/login" method="post">
+                <% if (locals.message) { %>
+                    <div class="alert alert-danger"><%= message %></div>
+                <% } %>
+                <div class="form-group">
+                    <label class="font-weight-bold" for="username">Username</label>
+                    <input class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold" for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                </div>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+<%- include('../footer.ejs') %>
+

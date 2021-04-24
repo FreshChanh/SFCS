@@ -1,0 +1,255 @@
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>No</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Gender</th>
+            <th>Birthday</th>
+            <th>Address</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% let counter = 1; %>
+        <% members_list.forEach(function(member){ %>
+            <tr class="memberRow" member_id = "<%- member.id %>">
+                <td><%- (page-1) * 7 + counter%></td><% counter++ %>
+                <td class="member_email"><%- member.email %></td>
+                <td class="member_username"><%- member.username %></td>
+                <% let member_gender = ""; %>
+                <% if (member.gender == 0) member_gender = "Male"; else if (member.gender == 1) member_gender = "Female"; else member_gender = ""; %>
+                <td class="member_gender" value="<%- member.gender %>"><%- member_gender %></td>
+                <td class="member_birthday"><%- getYYYYMMDD(member.birthday) %></td>
+                <td class="member_address"><%- member.address %></td>
+                <td><%- getYYYYMMDD(member.created_date) %></td>
+                <td><%- getYYYYMMDD(member.updated_date) %></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu" >
+                          <a class="dropdown-item edit_button" href="#" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i> Edit</a>
+                          <a class="dropdown-item reset_button" href="#" data-toggle="modal" data-target="#resetPasswordModal"><i class="fa fa-undo"></i> Reset Password</a>
+                          <a class="dropdown-item remove_button" href="#" data-toggle="modal" data-target="#removeMemberModal"><li class="fa fa-trash"></li> Remove</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit member data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger d-none" id="editModalAlert"></div>
+            <input type="text" id="edit_id" class="d-none">
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_email">Email: </label>
+                <input class="form-control" type="text" id="edit_email" name="edit_email">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_username">Username: </label>
+                <input class="form-control" type="text" id="edit_username" name="edit_username">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_gender">Gender: </label>
+                <select class="form-control" name="edit_gender" id="edit_gender">
+                    <option value="-1">Select a Gender</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_birthday">Birthday: </label>
+                <input class="form-control" type="date" id="edit_birthday" name="edit_birthday">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold" for="edit_address">Address: </label>
+                <input class="form-control" type="text" id="edit_address" name="edit_address">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveMemberDataButton">Save changes</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="reset_member_id" class="d-none">
+          <p>Are you sure to reset this member's password to 12345 ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="resetMemberPasswordButton" class="btn btn-primary">OK</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeMemberModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Remove</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="remove_member_id" class="d-none">
+          <p>Are you sure to remove this member ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="removeMemberButton" class="btn btn-primary">OK</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- End Modal -->
+
+<script>
+    $(".edit_button").on('click', function(e) {
+
+        let parent = $(this).closest(".memberRow");
+        let email = parent.find(".member_email").text();
+        let username = parent.find(".member_username").text();
+        let gender = parent.find(".member_gender").attr("value");
+        let birthday = parent.find(".member_birthday").text();
+        let address = parent.find(".member_address").text();
+
+        // Set value to modal
+        $("#edit_id").val(parent.attr("member_id"));
+        $("#edit_email").val(email);
+        $("#edit_username").val(username);
+        $("#edit_gender").val(gender);
+        $("#edit_birthday").val(birthday);
+        $("#edit_address").val(address);
+    });
+
+    $(".reset_button").on('click', function(e) {
+        let parent = $(this).closest(".memberRow");
+        $("#reset_member_id").val(parent.attr("member_id"));
+    });
+
+    $(".remove_button").on('click', function(e) {
+        let parent = $(this).closest(".memberRow");
+        $("#remove_member_id").val(parent.attr("member_id"));
+    });
+
+    $("#saveMemberDataButton").on('click', function (e) {
+        let id = $("#edit_id").val();
+        let email = $("#edit_email").val();
+        let username = $("#edit_username").val();
+        let gender = $("#edit_gender").val();
+        let birthday = $("#edit_birthday").val();
+        let address = $("#edit_address").val();
+
+        if (email == "") {
+            $("#editModalAlert").html("The email can't be empty !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+        if (username == "") {
+            $("#editModalAlert").html("The username can't be empty !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+        if (gender == -1) {
+            $("#editModalAlert").html("Please choose a gender !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+        if (birthday == "") {
+            $("#editModalAlert").html("The birthday can't be empty !");
+            $("#editModalAlert").removeClass("d-none");
+            return;
+        }
+
+        $.post("/manager/members/updateMemberData", {
+            id: id,
+            email: email,
+            username: username,
+            gender: gender,
+            birthday: birthday,
+            address: address
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_update") {
+                $("#editModalAlert").html("Cant update data !");
+                $("#editModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "error") {
+                $("#editModalAlert").html("Some errors occurred !");
+                $("#editModalAlert").removeClass("d-none");
+            }
+            else if (res.status == "success") {
+                $("#editModal").modal('hide');
+                showAlertModal("Success", "Update member's data successfully !", "/manager/members");
+            }
+        });
+
+        $("#editModalAlert").addClass("d-none");
+    });
+
+    $("#resetMemberPasswordButton").on('click', function() {
+        let id = $("#reset_member_id").val();
+
+        $.post("/manager/members/resetMemberPassword", {
+            id: id
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_reset") {
+                $("#resetPasswordModal").modal('hide');
+                showAlertModal("Failed", "Can't reset this member's password !", "/manager/members");
+            }
+            else if (res.status == "success") {
+                $("#resetPasswordModal").modal('hide');
+                showAlertModal("Success", "Reset this member's password successfully !", "/manager/members");
+            }
+        });
+    });
+
+    $("#removeMemberButton").on('click', function() {
+        let id = $("#remove_member_id").val();
+
+        $.post("/manager/members/removeMember", {
+            id: id
+        }, function (res) {
+            console.log(res);
+            if (res.status == "cant_remove") {
+                $("#removeMemberModal").modal('hide');
+                showAlertModal("Failed", "Can't remove this member !", "/manager/members");
+            }
+            else if (res.status == "success") {
+                $("#removeMemberModal").modal('hide');
+                showAlertModal("Success", "Remove this member successfully !", "/manager/members");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,51 @@
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>No</th>
+            <th>User</th>
+            <th>Order code</th>
+            <th>Menu List</th>
+            <th>Total cost</th>
+            <th>Status</th>
+            <th>Created Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% let counter = 1; %>
+        <% orders_list.forEach(function(order){ %>
+            <tr>
+                <td><%- (page-1) * 7 + counter%></td><% counter++ %>
+                <td><%- order.user_id %></td>
+                <td><%- order.order_code %></td>
+                <td>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Price</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let total_cost = 0; %>
+                            <% order.menu_list.forEach(function(menu) { %>
+                                <% total_cost += menu.price * menu.count; %>
+                                <tr>
+                                    <td><%- menu.title %></td>
+                                    <td><%- numberWithCommas(menu.price) + " VND" %></td>
+                                    <td><%- menu.count %></td> 
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                    
+                </td>
+                <td>
+                    <%- numberWithCommas(total_cost) + " VND" %>
+                </td>
+                <td><div class="badge badge-success"> Finished Order </div></td>
+                <td><%- getYYYYMMDD(order.created_date) %></td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>

@@ -1,0 +1,92 @@
+<%- include('../header.ejs') %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-1 sidebar text-center">
+            <div id="header" class="row sidebar-header text-center align-items-center" url="/manager/dashboard">
+                <div class="col-sm p-4">
+                    <img class="w-75" src="/manager/public/img/logo.png" alt="">
+                </div>
+            </div>
+            <% sidebarComponent.forEach(function(element){ %>
+                <div id="<%- element.id %>" class="row sidebar-component mt-2 align-items-center" url="<%- element.url %>">
+                    <div class="col-sm">
+                        <%- element.title %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        <div class="col-sm" >
+            <div class="row topnavbar align-items-center">
+                <div class="col text-left p-2 ">
+                    <h4 id="title">
+                        <%- title %>
+                    </h4>
+                </div>
+                <div class="col p-2">
+                    <div class="d-flex justify-content-end">
+                        <div class="dropdown" style="margin-right: 15px">
+                            <button class="btn btn-outline-light" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bell"></i> <span id="notification_num" class="badge badge-light">0</span>
+                            </button>
+                            <div id="notifications_menu" class="dropdown-menu dropdown-menu-right" ></div>
+                        </div>
+                        <form action="/manager/logout" method="post">
+                            <button type="submit" class="btn btn-outline-light">Log out</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row fill-viewport-height">
+                <div id="content" class="col fill-height border p-4">
+                    <% if (locals.content_url) { %>
+                        <%- include(content_url) %>
+                    <% } %>
+                    <%- include('../pagination.ejs') %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".sidebar-header").on('click', function() {
+        let url = $(this).attr("url");
+        window.location.href = url; 
+    });
+    $(".sidebar-component").on('click', function() {
+        let url = $(this).attr("url");
+        window.location.href = url; 
+    });
+</script>
+
+<script src="/manager/public/js/socket.io.js"></script>
+<script>
+
+    let socket = io();
+
+    socket.emit('register admin', '');
+       
+    socket.on('notify cook', function(message) {
+        let num = $("#notification_num").html();
+        $("#notification_num").html(parseInt(num) + 1);
+
+        // Show notification toast
+        showToast("Orders", message);
+    });
+
+    $(document).ready(function() {
+        $.post("/manager/orders/getNotifications", {}, (res) => {
+            if (res.status == 0) {
+                $("#notification_num").html(res.notifications_list.length);
+                let html = "";
+                for (let i = 0; i < res.notifications_list.length; ++i) {
+                    html += `<a href="/manager/orders?selected=${res.notifications_list[i].id}" class="dropdown-item"> ${res.notifications_list[i].order_code} </a>`;
+                }
+                $("#notifications_menu").html(html);
+            }
+        });
+    });
+
+</script>
+
+<%- include('../footer.ejs') %>

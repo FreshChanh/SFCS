@@ -1,0 +1,59 @@
+.wrapper{
+    display: flex;
+    width: 100%;
+}
+
+.fill-viewport-height{
+    height: 80vh;
+}
+
+.fill-height {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+}
+
+.sidebar{
+    height: 100vh;
+    background: #2f4252;
+    color: #fff;
+    padding-bottom: 100%; 
+    margin-bottom: -100%;
+}
+
+.sidebar-header{
+    background: #18344d;
+    cursor: pointer;
+}
+
+.sidebar-header:hover{
+    background-color: #5dc27b;
+}
+
+.sidebar-component{
+    background: #18344d;
+    padding-top: 10px; 
+    padding-bottom: 10px;
+    cursor: pointer;
+}
+
+.sidebar-component:hover{
+    background-color: #5dc27b;
+}
+
+.topnavbar{
+    background: #2f4252;
+    color: #fff;
+}
+
+.list-group{
+    overflow-y: auto;
+}
+
+.fill-viewport-height-2{
+    height: 70vh;
+}
+
+#content{
+    width: 100%;
+}
