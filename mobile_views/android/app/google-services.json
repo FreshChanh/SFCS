@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "489379507942",
+    "firebase_url": "https://resolute-vault-282409.firebaseio.com",
+    "project_id": "resolute-vault-282409",
+    "storage_bucket": "resolute-vault-282409.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489379507942:android:7b3522b660daf5e243d527",
+        "android_client_info": {
+          "package_name": "com.mobile_views"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489379507942-dpn988c6do0v9g41nvgvdqvlpv69tnc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwyHgIFs3l2_vauAP8L_wIhEhuD6gXvBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489379507942-dpn988c6do0v9g41nvgvdqvlpv69tnc2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
